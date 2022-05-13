@@ -28,6 +28,7 @@ new_connector = AWSDBConnector()
 
 
 def run_infinite_post_data_loop():
+
     while True:
         sleep(random.randrange(0, 2))
         random_row = random.randint(0, 11000)
@@ -37,6 +38,7 @@ def run_infinite_post_data_loop():
             result = dict(row)
         requests.post("http://localhost:8000/pin/", json=result)
         print(result)
+
 
 
 if __name__ == "__main__":

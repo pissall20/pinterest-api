@@ -24,6 +24,15 @@ class Data(BaseModel):
 @app.post("/pin/")
 def get_db_row(item: Data):
     data = dict(item)
+
+    topic_name = "test-topic"
+    producer = KafkaProducer(
+        bootstrap_servers=['localhost:9092'],
+        value_serializer=lambda x:
+        dumps(x).encode('utf-8')
+    )
+    producer.send(topic_name, data)
+
     return item
 
 
