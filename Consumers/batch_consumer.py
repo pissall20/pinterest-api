@@ -21,13 +21,13 @@ s3 = boto3.resource(
     aws_secret_access_key=aws_secret_key
 )
 
-bucket = s3.Bucket('pintrst')
-folder_name = "pinpost"
+bucket = s3.Bucket(bucket_name)
 print(bucket)
 
 # TODO send data to S3 using boto3
-consumer.subscribe(['pinterest'])
+consumer.subscribe([kafka_topic])
 for msg in consumer:
     data = msg.value
     save_file_name = data.get("unique_id") + ".json"
-    s3object = bucket.put_object(Key=save_file_name, Body=dumps(data))
+    save_path = os.path.join(folder_name, save_file_name)
+    s3object = bucket.put_object(Key=save_path, Body=dumps(data))
