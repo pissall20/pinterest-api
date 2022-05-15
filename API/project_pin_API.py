@@ -25,7 +25,7 @@ class Data(BaseModel):
 def get_db_row(item: Data):
     data = dict(item)
 
-    topic_name = "test-topic"
+    topic_name = "pinterest"
     producer = KafkaProducer(
         bootstrap_servers=['localhost:9092'],
         value_serializer=lambda x:
