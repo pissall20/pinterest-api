@@ -1,5 +1,10 @@
 .idea/
 .DS_Store
 API/__pycache__
+__pycache__
+User_Emulation/__pycache__
+Consumers/__pycache__
+helpers/__pycache__
 logs/
 cred_file.ini
+.python-version
