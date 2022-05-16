@@ -3,7 +3,6 @@ from pydantic import BaseModel
 import uvicorn
 from json import dumps
 from kafka import KafkaProducer
-from helpers.settings import *
 
 app = FastAPI()
 
@@ -26,7 +25,7 @@ class Data(BaseModel):
 def get_db_row(item: Data):
     data = dict(item)
 
-    topic_name = kafka_topic
+    topic_name = "pinterest"
     producer = KafkaProducer(
         bootstrap_servers=['localhost:9092'],
         value_serializer=lambda x:
