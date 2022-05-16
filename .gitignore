@@ -8,3 +8,4 @@ helpers/__pycache__
 logs/
 cred_file.ini
 .python-version
+json_files
