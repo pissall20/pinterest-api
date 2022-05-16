@@ -1,5 +1,7 @@
 import boto3
 from settings import *
+import sys
+print(sys.path)
 
 s3 = boto3.resource(
     service_name='s3',

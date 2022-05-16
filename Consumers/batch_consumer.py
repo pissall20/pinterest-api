@@ -1,10 +1,10 @@
+import sys, os
+sys.path.insert(0, os.getcwd())
+
 from kafka import KafkaConsumer
 from json import loads, dumps
 import boto3
-import os
-from json.decoder import JSONDecodeError
-from time import sleep
-from helpers.settings import *
+from settings import *
 
 
 consumer = KafkaConsumer(
@@ -24,7 +24,6 @@ s3 = boto3.resource(
 bucket = s3.Bucket(bucket_name)
 print(bucket)
 
-# TODO send data to S3 using boto3
 consumer.subscribe([kafka_topic])
 for msg in consumer:
     data = msg.value
