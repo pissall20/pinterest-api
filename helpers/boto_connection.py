@@ -1,7 +1,9 @@
-import sys, os
-sys.path.insert(0, os.getcwd())
+import os
+import sys
 import boto3
 
+# To fix path issues for import
+sys.path.insert(0, os.getcwd())
 from settings import *
 
 s3 = boto3.resource(

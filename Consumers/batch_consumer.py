@@ -1,10 +1,11 @@
-# To fix path issues
-import sys, os
-sys.path.insert(0, os.getcwd())
-
+import os
+import sys
 from kafka import KafkaConsumer
 from json import loads, dumps
 import boto3
+
+# To fix path issues for import
+sys.path.insert(0, os.getcwd())
 from settings import *
 
 # Create a Kafka Consumer
