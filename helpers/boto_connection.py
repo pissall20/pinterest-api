@@ -1,7 +1,8 @@
+import sys, os
+sys.path.insert(0, os.getcwd())
 import boto3
+
 from settings import *
-import sys
-print(sys.path)
 
 s3 = boto3.resource(
     service_name='s3',
@@ -14,8 +15,14 @@ bucket = s3.Bucket('pintrst')
 print(bucket)
 
 # s3.Object('pintrst', 'pinpost/image_traits.csv').put(Body=open('/Users/pissall/git/general-coding/Pinterest_App/helpers/image_traits.csv', 'rb'))
+# object_delete = 'pinpost/image_traits.csv'
+# s3.Object("pintrst", object_delete).delete()
+# print("Object deletion successful")
+
+list_of_files = list()
 
 for buck_object in bucket.objects.all():
     print(buck_object.key)
+    list_of_files.append(buck_object.key)
 
-
+print(len(list_of_files))
