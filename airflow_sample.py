@@ -81,7 +81,12 @@ with DAG(
 
 """
 We need to copy this file to ~/airflow/dags (default location)
+
+cp airflow_sample.py ~/airflow/dags/
+
 Then we need to run the python file from there
+python ~/airflow/dags/airflow_sample.py 
+
 Use following commands after setting the dag there 
 """
 
