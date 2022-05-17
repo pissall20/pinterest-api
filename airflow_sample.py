@@ -74,7 +74,7 @@ with DAG(
         task_id='spark_run',
         depends_on_past=False,
         # Change to full absolute path
-        bash_command='python /Users/pissall/git/general-coding/Pinterest_App/Consumers/streaming_consumer.py',
+        bash_command='python /Users/pissall/git/general-coding/Pinterest_App/Consumers/batch_consumer.py',
     )
 
     t1 >> [t2, t3]
