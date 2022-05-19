@@ -30,6 +30,8 @@ for buck_object in bucket.objects.all():
         continue
     list_of_files.append(buck_object.key)
     save_local_file = buck_object.key.split("/")[1]
+    if not os.path.exists("json_files"):
+        os.makedirs("json_files")
     local_file_path = os.path.join(os.getcwd(), "json_files", save_local_file)
     bucket.download_file(buck_object.key, local_file_path)
 
