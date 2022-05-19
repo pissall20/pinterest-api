@@ -3,7 +3,8 @@ import pyspark.sql.functions as F
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 
-packages = ['org.apache.spark:spark-sql-kafka-0-10_2.12:{}'.format(pyspark.__version__)]
+packages = ['org.apache.spark:spark-sql-kafka-0-10_2.12:{}'.format(pyspark.__version__),
+            "org.postgresql:postgresql:9.4.1211"]
 packages = ",".join(packages) if isinstance(packages, list) else packages
 spark = (
     SparkSession.builder.master("local[*]")
@@ -38,8 +39,8 @@ schema_df = string_df.select(F.from_json(F.col("value"), schema).alias("data")).
 df1 = schema_df.withColumn("save_location", F.expr("substring(save_location, 16, length(save_location))"))
 
 # Clean follower count and convert to integer (k=1000, M=100000)
-df2 = df1.withColumn("follower_count", F.regexp_replace(F.col("follower_count"), "k", "000"))\
-    .withColumn("follower_count", F.regexp_replace(F.col("follower_count"), "M", "000000"))\
+df2 = df1.withColumn("follower_count", F.regexp_replace(F.col("follower_count"), "k", "000")) \
+    .withColumn("follower_count", F.regexp_replace(F.col("follower_count"), "M", "000000")) \
     .withColumn("follower_count", F.col("follower_count").cast("integer"))
 
 # Convert tag_list which is as string to an actual list of tags
@@ -50,4 +51,43 @@ df4 = df3.withColumn("number_of_tags", F.size(F.col("tag_list_clean")))
 
 df4.printSchema()
 
-df4.writeStream.format("console").outputMode("append").start().awaitTermination()
+columns = ['category', 'index', 'unique_id', 'title', 'description', 'follower_count', 'tag_list',
+           'is_image_or_video', 'image_src', 'downloaded', 'save_location', 'tag_list_clean', 'number_of_tags']
+
+df5 = df4.withColumn("value", F.to_json(F.struct(*columns)))
+
+# Write data to console (for internal testing only)
+# df5.writeStream.format("console").outputMode("append").start().awaitTermination()
+
+
+def write_to_postgres(df, epoch_id):
+    df.write \
+        .mode('append') \
+        .format('jdbc') \
+        .option("url", "jdbc:postgresql://localhost:5432/events") \
+        .option("driver", "org.postgresql.Driver") \
+        .option("dbtable", "pinterest") \
+        .option("user", "siddhesh") \
+        .option("password", "abc@123") \
+        .save()
+
+
+df4.writeStream \
+   .foreachBatch(write_to_postgres) \
+   .option("checkpointLocation", "tmp/checkpoint") \
+   .outputMode('update') \
+   .start()
+
+# use `write` for batch, like DataFrame
+
+# df5.selectExpr("CAST(unique_id AS STRING)", "CAST(value AS STRING)") \
+#     .writeStream \
+#     .format("kafka") \
+#     .option("checkpointLocation", "tmp/checkpoint") \
+#     .option("topic", "sparkout") \
+#     .option("kafka.bootstrap.servers", "localhost:9092").start()
+
+
+# df4.select(F.to_json(F.struct(*columns)).alias("value")).writeStream.format("kafka")\
+#     .option("checkpointLocation", "tmp/checkpoint") \
+#     .option("kafka.bootstrap.servers", "localhost:9092").option("topic", "sparkout").start()
