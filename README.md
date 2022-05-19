@@ -72,3 +72,8 @@ airflow tasks test spark print_date 2015-06-01
 airflow tasks test spark spark_run 2015-06-01
 ```
 
+When you setup postgresql, you can use the commands `bash/create_table.sql` to setup the user and the table 
+required for the script to run. Do not try running the script, rather run the commands individually inside postgres
+
+The other commands are also saved in `bash/kafka-commands.sh`
+
